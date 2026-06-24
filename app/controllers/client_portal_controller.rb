@@ -1,6 +1,6 @@
 class ClientPortalController < ApplicationController
   skip_before_action :require_barber, raise: false
-  before_action :require_client_login
+  before_action :ensure_client_logged_in
 
   def index
     @customer = current_client
@@ -16,5 +16,11 @@ class ClientPortalController < ApplicationController
     @appointments = @customer.customer_appointments.includes(:service).order(created_at: :desc)
     @rewards = @customer.rewards.order(created_at: :desc)
     @services = @barbershop.services.where(active: true).order(:name)
+  end
+
+  private
+
+  def ensure_client_logged_in
+    redirect_to cliente_login_path, alert: "Faça login para acessar seu cartão fidelidade." unless current_client
   end
 end
