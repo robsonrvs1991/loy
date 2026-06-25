@@ -4,7 +4,9 @@ class ServicesController < ApplicationController
   before_action :set_service, only: [:show, :edit, :update, :destroy]
 
   def index
-    @services = current_user.barbershop.services.order(:name)
+    @services = current_user.barbershop.services.order(active: :desc, name: :asc)
+    @active_services_count = @services.select(&:active).count
+    @inactive_services_count = @services.reject(&:active).count
   end
 
   def show; end
@@ -15,8 +17,9 @@ class ServicesController < ApplicationController
 
   def create
     @service = current_user.barbershop.services.new(service_params)
+
     if @service.save
-      redirect_to services_path, notice: "Serviço cadastrado com sucesso."
+      redirect_to services_path, notice: "Item/serviço cadastrado com sucesso."
     else
       render :new, status: :unprocessable_entity
     end
@@ -26,7 +29,7 @@ class ServicesController < ApplicationController
 
   def update
     if @service.update(service_params)
-      redirect_to services_path, notice: "Serviço atualizado com sucesso."
+      redirect_to services_path, notice: "Item/serviço atualizado com sucesso."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -34,7 +37,7 @@ class ServicesController < ApplicationController
 
   def destroy
     @service.destroy
-    redirect_to services_path, notice: "Serviço removido com sucesso."
+    redirect_to services_path, notice: "Item/serviço removido com sucesso."
   end
 
   private

@@ -1,4 +1,55 @@
-<h1><%= @service.name %></h1>
-<p>Pontos: <%= @service.points %></p>
-<p>Ativo: <%= @service.active ? "Sim" : "Não" %></p>
-<%= link_to "Editar", edit_service_path(@service), class: "btn btn-primary" %>
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <div>
+    <span class="badge text-bg-primary rounded-pill px-3 py-2 mb-2">Detalhes</span>
+    <h1 class="fw-bold mb-1"><%= @service.name %></h1>
+    <p class="text-muted mb-0">Informações do item/serviço cadastrado.</p>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= link_to "Voltar", services_path, class: "btn btn-outline-secondary" %>
+    <%= link_to "Editar", edit_service_path(@service), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">Dados principais</h5>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Nome</small>
+          <div class="fs-5 fw-semibold"><%= @service.name %></div>
+        </div>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Pontos gerados</small>
+          <div class="fs-5 fw-semibold">
+            <%= @service.points %> ponto<%= "s" if @service.points.to_i != 1 %>
+          </div>
+        </div>
+
+        <div>
+          <small class="text-muted d-block">Status</small>
+          <% if @service.active? %>
+            <span class="badge rounded-pill text-bg-success">Ativo</span>
+          <% else %>
+            <span class="badge rounded-pill text-bg-secondary">Inativo</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm bg-light">
+      <div class="card-body p-4">
+        <h6 class="fw-bold">Como isso será usado?</h6>
+        <p class="text-muted small mb-0">
+          Este cadastro poderá ser vinculado a atendimentos, vendas ou programas de fidelidade.
+          Exemplo: café, pizza, corte, consulta, produto ou qualquer item vendido pelo negócio.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
