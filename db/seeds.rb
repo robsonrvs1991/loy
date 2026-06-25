@@ -32,10 +32,10 @@ customer.save!
   ["Corte Premium", 1],
   ["Barba", 1]
 ].each do |name, points|
-  Service.find_or_create_by!(name: name, barbershop: barbershop) do |service|
-    service.active = true
-    service.points = points
-  end
+  service = Service.find_or_initialize_by(name: name, barbershop: barbershop)
+  service.active = true
+  service.points = points
+  service.save!
 end
 
 program = LoyaltyProgram.find_or_initialize_by(barbershop: barbershop)
@@ -43,8 +43,12 @@ program.required_visits = 10
 program.reward_description = "Corte grátis"
 program.save!
 
-User.find_or_create_by!(email: "ldcmiudo@gmail.com") do |user|
-  user.name = "Robson"
-  user.role = "owner"
-  user.password = "123456"
-end
+owner = User.find_or_initialize_by(email: "ldcmiudo@gmail.com")
+owner.assign_attributes(
+  name: "Robson",
+  role: "owner",
+  barbershop_id: nil,
+  password: "123456",
+  password_confirmation: "123456"
+)
+owner.save!
