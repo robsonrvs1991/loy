@@ -6,7 +6,7 @@ class App::DashboardController < ApplicationController
   def index
     @barbershop = current_barbershop
     @subscription = current_company&.subscription
-    @loyalty_program = @barbershop.loyalty_program
+    @loyalty_program = @barbershop.loyalty_programs.active.first
 
     @customers_count = @barbershop.respond_to?(:customers) ? @barbershop.customers.count : 0
     @appointments_count = @barbershop.appointments.count

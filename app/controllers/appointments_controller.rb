@@ -21,7 +21,11 @@ class AppointmentsController < ApplicationController
     @appointment.points = @appointment.service&.points || 1
 
     if @appointment.save
-      Reward.create_if_earned!(@appointment.customer, current_user.barbershop)
+      Reward.create_if_earned!(
+  @appointment.customer,
+  current_user.barbershop,
+  service: @appointment.service
+)
       redirect_to customer_path(@appointment.customer), notice: "Atendimento registrado com sucesso."
     else
       load_form_data

@@ -1,32 +1,47 @@
 class Reward < ApplicationRecord
   belongs_to :barbershop
   belongs_to :customer, class_name: "User"
+  belongs_to :loyalty_program, optional: true
 
   before_validation :generate_code, on: :create
 
   validates :code, presence: true, uniqueness: true
 
-  def self.create_if_earned!(customer, barbershop)
-  loyalty_program = barbershop.loyalty_program
-  return unless loyalty_program
+  def self.create_if_earned!(customer, barbershop, service: nil)
+    programs = barbershop.loyalty_programs.active
 
-  required_points = loyalty_program.required_visits
+    programs = programs.where(service_id: [nil, service&.id])
 
-  total_points = barbershop.appointments.where(customer: customer).sum(:points)
-  rewards_count = barbershop.rewards.where(customer: customer).count
+    programs.find_each do |program|
+      create_for_program_if_earned!(customer, barbershop, program)
+    end
+  end
 
-  already_used_points = rewards_count * required_points
+  def self.create_for_program_if_earned!(customer, barbershop, program)
+    required_points = program.required_visits
 
-  return if total_points < already_used_points + required_points
+    appointments = barbershop.appointments.where(customer: customer)
+    appointments = appointments.where(service_id: program.service_id) if program.service_id.present?
 
-  create!(
-    barbershop: barbershop,
-    customer: customer,
-    description: loyalty_program.reward_description,
-    used: false,
-    earned_at: Time.current
-  )
-end
+    total_points = appointments.sum(:points)
+
+    rewards_count = barbershop.rewards
+                               .where(customer: customer, loyalty_program: program)
+                               .count
+
+    already_used_points = rewards_count * required_points
+
+    return if total_points < already_used_points + required_points
+
+    create!(
+      barbershop: barbershop,
+      customer: customer,
+      loyalty_program: program,
+      description: program.reward_description,
+      used: false,
+      earned_at: Time.current
+    )
+  end
 
   private
 

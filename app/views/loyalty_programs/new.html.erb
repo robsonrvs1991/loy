@@ -1,11 +1,18 @@
-<% content_for :title, "New loyalty program" %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="text-muted mb-1">Configuração de fidelidade</p>
+    <h1 class="h3 mb-0">Novo programa</h1>
+  </div>
 
-<h1>New loyalty program</h1>
+  <%= link_to "Voltar", loyalty_programs_path, class: "btn btn-outline-secondary" %>
+</div>
 
-<%= render "form", loyalty_program: @loyalty_program %>
-
-<br>
-
-<div>
-  <%= link_to "Back to loyalty programs", loyalty_programs_path %>
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card loy-card">
+      <div class="card-body p-4 p-md-5">
+        <%= render "form" %>
+      </div>
+    </div>
+  </div>
 </div>

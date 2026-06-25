@@ -1,58 +1,101 @@
-<h1>Cadastre sua empresa</h1>
+<div class="row align-items-center justify-content-center g-5 py-4">
+  <div class="col-lg-5">
+    <span class="badge text-bg-dark rounded-pill px-3 py-2 mb-3">
+      Comece gratuitamente
+    </span>
 
-<p>Crie sua conta para começar a usar o Loy.</p>
+    <h1 class="display-5 fw-bold mb-3">
+      Crie seu programa de fidelidade em poucos minutos.
+    </h1>
 
-<%= form_with url: public_registration_path, method: :post do |form| %>
+    <p class="lead text-muted mb-4">
+      Transforme cada venda em uma oportunidade para fidelizar clientes,
+      aumentar a recorrência e impulsionar suas vendas.
+    </p>
 
-  <div>
-    <%= form.label :company_name, "Nome da empresa" %><br>
-    <%= form.text_field :company_name, required: true %>
+    <div class="d-grid gap-3">
+      <div class="d-flex gap-3">
+        <div class="fs-4">✅</div>
+        <div>
+          <strong>30 dias para testar</strong>
+          <p class="text-muted mb-0">Comece sem compromisso e valide no seu negócio.</p>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3">
+        <div class="fs-4">🎁</div>
+        <div>
+          <strong>Recompensas automáticas</strong>
+          <p class="text-muted mb-0">O Loy gera códigos quando o cliente atinge a meta.</p>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3">
+        <div class="fs-4">📱</div>
+        <div>
+          <strong>Acesso pelo navegador</strong>
+          <p class="text-muted mb-0">Use no computador, tablet ou celular.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <br>
+  <div class="col-lg-6">
+    <div class="card loy-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="mb-4">
+          <p class="text-muted mb-1">Cadastro da empresa</p>
+          <h2 class="h3 fw-bold mb-0">Criar minha conta</h2>
+        </div>
 
-  <div>
-    <%= form.label :company_phone, "WhatsApp da empresa" %><br>
-    <%= form.telephone_field :company_phone, required: true %>
+        <%= form_with url: public_registration_path, method: :post do |form| %>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <%= form.label :company_name, "Nome da empresa", class: "form-label fw-semibold" %>
+              <%= form.text_field :company_name, required: true, class: "form-control form-control-lg", placeholder: "Ex: Vitor Luckkq" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :company_phone, "WhatsApp da empresa", class: "form-label fw-semibold" %>
+              <%= form.telephone_field :company_phone, required: true, class: "form-control form-control-lg", placeholder: "(48) 99999-9999" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :owner_name, "Nome do responsável", class: "form-label fw-semibold" %>
+              <%= form.text_field :owner_name, required: true, class: "form-control form-control-lg", placeholder: "Seu nome" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :owner_phone, "WhatsApp do responsável", class: "form-label fw-semibold" %>
+              <%= form.telephone_field :owner_phone, required: true, class: "form-control form-control-lg", placeholder: "(48) 99999-9999" %>
+            </div>
+
+            <div class="col-12">
+              <%= form.label :owner_email, "E-mail de acesso", class: "form-label fw-semibold" %>
+              <%= form.email_field :owner_email, required: true, class: "form-control form-control-lg", placeholder: "voce@email.com" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :password, "Senha", class: "form-label fw-semibold" %>
+              <%= form.password_field :password, required: true, class: "form-control form-control-lg", placeholder: "Crie uma senha" %>
+            </div>
+
+            <div class="col-md-6">
+              <%= form.label :password_confirmation, "Confirmar senha", class: "form-label fw-semibold" %>
+              <%= form.password_field :password_confirmation, required: true, class: "form-control form-control-lg", placeholder: "Repita a senha" %>
+            </div>
+          </div>
+
+          <div class="d-grid mt-4">
+            <%= form.submit "Criar minha conta grátis", class: "btn btn-loy btn-lg" %>
+          </div>
+
+          <p class="text-muted small text-center mt-3 mb-0">
+            Já tem uma conta?
+            <%= link_to "Entrar", login_path, class: "fw-semibold" %>
+          </p>
+        <% end %>
+      </div>
+    </div>
   </div>
-
-  <br>
-
-  <div>
-    <%= form.label :owner_name, "Nome do responsável" %><br>
-    <%= form.text_field :owner_name, required: true %>
-  </div>
-
-  <br>
-
-  <div>
-    <%= form.label :owner_email, "E-mail do responsável" %><br>
-    <%= form.email_field :owner_email, required: true %>
-  </div>
-
-  <br>
-
-  <div>
-    <%= form.label :owner_phone, "WhatsApp do responsável" %><br>
-    <%= form.telephone_field :owner_phone, required: true %>
-  </div>
-
-  <br>
-
-  <div>
-    <%= form.label :password, "Senha" %><br>
-    <%= form.password_field :password, required: true %>
-  </div>
-
-  <br>
-
-  <div>
-    <%= form.label :password_confirmation, "Confirmar senha" %><br>
-    <%= form.password_field :password_confirmation, required: true %>
-  </div>
-
-  <br>
-
-  <%= form.submit "Criar minha conta" %>
-
-<% end %>
+</div>

@@ -1,60 +1,121 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-start mb-4">
     <div>
-      <h1 class="h3 mb-1">Olá, <%= @customer.name %>!</h1>
+      <p class="text-muted mb-1">Meu cartão fidelidade</p>
+      <h1 class="h3 mb-1">Olá, <%= @customer.name %> 👋</h1>
       <p class="text-muted mb-0"><%= @barbershop.name %></p>
     </div>
 
-    <%= button_to "Sair", cliente_logout_path, method: :delete, class: "btn btn-outline-secondary" rescue nil %>
+    <%= button_to "Sair", client_logout_path, method: :delete, class: "btn btn-outline-secondary" rescue nil %>
   </div>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-2">Seu Cartão Fidelidade</h2>
-      <p class="text-muted mb-3"><%= @loyalty_program&.reward_description.presence || "Recompensa disponível ao completar a meta" %></p>
+  <div class="card loy-card mb-4">
+    <div class="card-body p-4 p-md-5">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+        <div>
+          <p class="text-muted mb-1">Seu cartão</p>
+          <h2 class="h3 mb-2">
+            <%= @loyalty_program&.reward_description.presence || "Recompensa disponível ao completar a meta" %>
+          </h2>
+          <p class="text-muted mb-0">
+            Acumule pontos e resgate recompensas no estabelecimento.
+          </p>
+        </div>
+
+        <span class="badge text-bg-primary px-3 py-2">
+          <%= @points %> ponto(s)
+        </span>
+      </div>
 
       <% percent = [[(@points.to_f / @required_points) * 100, 100].min, 0].max %>
 
-      <div class="progress mb-3" style="height: 32px;">
-        <div class="progress-bar" role="progressbar" style="width: <%= percent %>%;">
+      <div class="progress mb-3 rounded-pill" style="height: 34px;">
+        <div class="progress-bar rounded-pill fw-semibold" role="progressbar" style="width: <%= percent %>%;">
           <%= @points %> de <%= @required_points %>
         </div>
       </div>
 
       <% if @remaining_points.zero? %>
-        <div class="alert alert-success mb-0">
+        <div class="alert alert-success border-0 rounded-4 mb-0">
           Parabéns! Você já atingiu a meta para ganhar uma recompensa.
         </div>
       <% else %>
-        <div class="alert alert-info mb-0">
-          Faltam <strong><%= @remaining_points %></strong> atendimento(s)/ponto(s) para sua próxima recompensa.
+        <div class="alert alert-info border-0 rounded-4 mb-0">
+          Faltam <strong><%= @remaining_points %></strong> ponto(s) para sua próxima recompensa.
         </div>
       <% end %>
     </div>
   </div>
 
+  <% available_rewards = @rewards.select { |reward| !reward.used? } %>
+
+  <% if available_rewards.any? %>
+    <div class="card loy-card mb-4 border-success">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex align-items-start gap-3 mb-4">
+          <div class="rounded-4 bg-success bg-opacity-10 text-success p-3 fs-2">
+            🎁
+          </div>
+
+          <div>
+            <p class="text-muted mb-1">Recompensa disponível</p>
+            <h2 class="h3 mb-1">Você tem recompensa para resgatar</h2>
+            <p class="text-muted mb-0">
+              Apresente o código abaixo no estabelecimento para resgatar sua recompensa.
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <% available_rewards.each do |reward| %>
+            <div class="col-md-6">
+              <div class="border rounded-4 p-4 h-100 bg-light">
+                <p class="text-muted mb-1">Recompensa</p>
+                <h3 class="h5 mb-3"><%= reward.description %></h3>
+
+                <p class="text-muted mb-2">Código para apresentar</p>
+                <div class="display-6 fw-bold text-primary mb-3">
+                  <%= reward.code %>
+                </div>
+
+                <p class="small text-muted mb-0">
+                  Gerada em <%= l(reward.created_at, format: :short) %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="row">
     <div class="col-md-6 mb-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
           <h2 class="h5 mb-3">Minhas Recompensas</h2>
 
           <% if @rewards.any? %>
             <div class="list-group list-group-flush">
               <% @rewards.each do |reward| %>
-                <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong><%= reward.description %></strong>
-                    <div class="small text-muted">
-                      Gerada em <%= l(reward.created_at, format: :short) %>
+                <div class="list-group-item px-0">
+                  <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                      <strong><%= reward.description %></strong>
+                      <div class="small text-muted">
+                        Código: <strong><%= reward.code %></strong>
+                      </div>
+                      <div class="small text-muted">
+                        Gerada em <%= l(reward.created_at, format: :short) %>
+                      </div>
                     </div>
-                  </div>
 
-                  <% if reward.used? %>
-                    <span class="badge text-bg-secondary">Utilizada</span>
-                  <% else %>
-                    <span class="badge text-bg-success">Disponível</span>
-                  <% end %>
+                    <% if reward.used? %>
+                      <span class="badge text-bg-secondary">Utilizada</span>
+                    <% else %>
+                      <span class="badge text-bg-success">Disponível</span>
+                    <% end %>
+                  </div>
                 </div>
               <% end %>
             </div>
@@ -66,9 +127,9 @@
     </div>
 
     <div class="col-md-6 mb-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h2 class="h5 mb-3">Serviços Participantes</h2>
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Itens/Serviços participantes</h2>
 
           <% if @services.any? %>
             <ul class="list-group list-group-flush">
@@ -80,40 +141,41 @@
               <% end %>
             </ul>
           <% else %>
-            <p class="text-muted mb-0">Nenhum serviço cadastrado.</p>
+            <p class="text-muted mb-0">Nenhum item/serviço cadastrado.</p>
           <% end %>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h2 class="h5 mb-3">Meus Atendimentos</h2>
+  <div class="card loy-card mb-4">
+    <div class="card-body p-4">
+      <h2 class="h5 mb-3">Meu histórico</h2>
 
       <% if @appointments.any? %>
         <div class="table-responsive">
-          <table class="table align-middle">
+          <table class="table align-middle mb-0">
             <thead>
               <tr>
-                <th>Serviço</th>
+                <th>Item/Serviço</th>
                 <th>Data</th>
                 <th class="text-end">Pontos</th>
               </tr>
             </thead>
+
             <tbody>
               <% @appointments.each do |appointment| %>
                 <tr>
-                  <td><%= appointment.service&.name || "Atendimento" %></td>
+                  <td><%= appointment.service&.name || "Registro" %></td>
                   <td><%= l(appointment.created_at, format: :short) %></td>
-                  <td class="text-end"><%= appointment.service&.points.to_i %></td>
+                  <td class="text-end"><%= appointment.points.to_i %></td>
                 </tr>
               <% end %>
             </tbody>
           </table>
         </div>
       <% else %>
-        <p class="text-muted mb-0">Nenhum atendimento registrado ainda.</p>
+        <p class="text-muted mb-0">Nenhum registro encontrado ainda.</p>
       <% end %>
     </div>
   </div>

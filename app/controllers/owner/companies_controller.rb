@@ -18,7 +18,7 @@ module Owner
     def show
       @owner_user = @company.owner_user
       @subscription = @company.subscription
-      @loyalty_program = @company.loyalty_program
+      @loyalty_programs = @company.loyalty_programs.includes(:service).order(active: :desc, created_at: :desc)
 
       @customers_count = @company.users.where(role: "customer").count
       @services_count = @company.services.count
@@ -49,7 +49,14 @@ module Owner
 
       ActiveRecord::Base.transaction do
         @company.save!
-        @company.create_loyalty_program!(required_visits: 10, reward_description: "Recompensa grátis") unless @company.loyalty_program
+
+        @company.loyalty_programs.create!(
+          name: "Programa de fidelidade",
+          required_visits: 10,
+          reward_description: "Recompensa grátis",
+          active: true
+        ) if @company.loyalty_programs.none?
+
         @company.create_subscription!(subscription_params)
         @owner_user.save!
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_184025) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_204809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,12 +42,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184025) do
   end
 
   create_table "loyalty_programs", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
     t.bigint "barbershop_id", null: false
     t.datetime "created_at", null: false
+    t.string "name"
     t.integer "required_visits"
     t.string "reward_description"
+    t.bigint "service_id"
     t.datetime "updated_at", null: false
     t.index ["barbershop_id"], name: "index_loyalty_programs_on_barbershop_id"
+    t.index ["service_id"], name: "index_loyalty_programs_on_service_id"
   end
 
   create_table "rewards", force: :cascade do |t|
@@ -57,11 +61,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184025) do
     t.bigint "customer_id"
     t.string "description"
     t.datetime "earned_at"
+    t.bigint "loyalty_program_id"
     t.datetime "updated_at", null: false
     t.boolean "used"
     t.datetime "used_at"
     t.index ["barbershop_id"], name: "index_rewards_on_barbershop_id"
     t.index ["code"], name: "index_rewards_on_code", unique: true
+    t.index ["loyalty_program_id"], name: "index_rewards_on_loyalty_program_id"
   end
 
   create_table "services", force: :cascade do |t|
@@ -109,7 +115,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184025) do
   add_foreign_key "appointments", "barbershops"
   add_foreign_key "appointments", "services"
   add_foreign_key "loyalty_programs", "barbershops"
+  add_foreign_key "loyalty_programs", "services"
   add_foreign_key "rewards", "barbershops"
+  add_foreign_key "rewards", "loyalty_programs"
   add_foreign_key "services", "barbershops"
   add_foreign_key "subscriptions", "barbershops"
   add_foreign_key "users", "barbershops"

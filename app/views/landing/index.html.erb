@@ -1,52 +1,174 @@
-<div class="py-5 text-center">
-  <h1 class="display-4 fw-bold">Loy</h1>
+<section class="py-5">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-6">
+      <span class="badge text-bg-dark rounded-pill px-3 py-2 mb-3">
+        Plataforma de fidelização
+      </span>
 
-  <p class="lead mt-3">
-    Juntos. O seu programa de fidelidade, do seu jeito.
-  </p>
+      <h1 class="display-4 fw-bold mb-4">
+        Fidelize clientes.<br>
+        Aumente suas vendas.<br>
+        Faça seu negócio crescer.
+      </h1>
 
-  <p class="text-muted">
-    Transforme clientes ocasionais em clientes fiéis com um programa simples,
-    moderno e fácil de usar.
-  </p>
+      <p class="lead text-muted mb-4">
+        Transforme cada venda em uma oportunidade para fidelizar clientes,
+        aumentar a recorrência e impulsionar suas vendas.
+      </p>
 
-  <div class="mt-4">
-    <%= link_to "Começar grátis", signup_path, class: "btn btn-primary btn-lg me-2" %>
-    <%= link_to "Entrar", login_path, class: "btn btn-outline-dark btn-lg" %>
+      <div class="d-flex flex-wrap gap-3">
+        <%= link_to "Começar gratuitamente", signup_path, class: "btn btn-loy btn-lg px-4" %>
+        <%= link_to "Entrar", login_path, class: "btn btn-outline-secondary btn-lg px-4" %>
+      </div>
+
+      <p class="text-muted small mt-3 mb-0">
+        Sem instalação. Acesse pelo navegador. Ideal para qualquer negócio.
+      </p>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card loy-card">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <p class="text-muted mb-1">Dashboard Loy</p>
+              <h2 class="h4 mb-0">Seu programa em tempo real</h2>
+            </div>
+            <span class="badge text-bg-success">Ativo</span>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="bg-light rounded-4 p-3">
+                <p class="text-muted small mb-1">Clientes</p>
+                <div class="h2 mb-0">128</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="bg-light rounded-4 p-3">
+                <p class="text-muted small mb-1">Recompensas</p>
+                <div class="h2 mb-0">24</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="bg-light rounded-4 p-3">
+                <p class="text-muted small mb-1">Vendas registradas</p>
+                <div class="h2 mb-0">842</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="bg-light rounded-4 p-3">
+                <p class="text-muted small mb-1">Resgates</p>
+                <div class="h2 mb-0">19</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border rounded-4 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <strong>Recompensa disponível</strong>
+                <div class="text-muted small">Código: LOY-8K2ZP1</div>
+              </div>
+              <span class="badge text-bg-success">Disponível</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<hr>
-
-<div class="row text-center my-5">
-  <div class="col-md-4">
-    <h3>1. Cadastre</h3>
-    <p>Crie sua empresa e configure seu programa de fidelidade.</p>
+<section class="py-5">
+  <div class="text-center mb-5">
+    <h2 class="h1 fw-bold">Como funciona</h2>
+    <p class="text-muted mb-0">Simples para a empresa. Claro para o cliente.</p>
   </div>
 
-  <div class="col-md-4">
-    <h3>2. Registre</h3>
-    <p>Cadastre clientes, serviços e atendimentos realizados.</p>
+  <div class="row g-4">
+    <div class="col-md-3">
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
+          <div class="fs-1 mb-3">🏪</div>
+          <h3 class="h5">Cadastre seu negócio</h3>
+          <p class="text-muted mb-0">Configure sua empresa e comece em poucos minutos.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
+          <div class="fs-1 mb-3">🛍️</div>
+          <h3 class="h5">Cadastre itens</h3>
+          <p class="text-muted mb-0">Produtos, serviços ou qualquer venda que gere pontos.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
+          <div class="fs-1 mb-3">⭐</div>
+          <h3 class="h5">Defina regras</h3>
+          <p class="text-muted mb-0">Crie metas e recompensas personalizadas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card loy-card h-100">
+        <div class="card-body p-4">
+          <div class="fs-1 mb-3">🎁</div>
+          <h3 class="h5">Fidelize clientes</h3>
+          <p class="text-muted mb-0">O Loy gera recompensas automaticamente.</p>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="col-md-4">
-    <h3>3. Fidelize</h3>
-    <p>Premie quem volta sempre e acompanhe tudo pelo painel.</p>
+<section class="py-5">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-5">
+      <h2 class="h1 fw-bold mb-3">Para qualquer tipo de negócio</h2>
+      <p class="text-muted mb-4">
+        O Loy se adapta ao seu modelo de venda, seja produto, serviço,
+        atendimento, assinatura ou recorrência.
+      </p>
+
+      <%= link_to "Criar minha conta", signup_path, class: "btn btn-loy btn-lg px-4" %>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="row g-3">
+        <% ["Barbearias", "Salões", "Clínicas", "Pet shops", "Restaurantes", "Lojas", "Academias", "Qualquer negócio"].each do |segment| %>
+          <div class="col-md-6">
+            <div class="bg-white border rounded-4 p-3 shadow-sm">
+              <strong><%= segment %></strong>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="card shadow-sm my-5">
-  <div class="card-body text-center">
-    <h2>Plano Loy</h2>
+<section class="py-5">
+  <div class="card loy-card bg-dark text-white">
+    <div class="card-body p-5 text-center">
+      <h2 class="display-6 fw-bold mb-3">
+        Comece seu programa de fidelidade hoje.
+      </h2>
 
-    <p class="text-muted mb-1">30 dias grátis</p>
+      <p class="lead text-white-50 mb-4">
+        Leva poucos minutos para cadastrar sua empresa e começar a fidelizar clientes.
+      </p>
 
-    <h3 class="fw-bold">R$ 19,90/mês</h3>
-
-    <p class="text-muted">
-      Sem taxa de adesão. Sem fidelidade. Cancele quando quiser.
-    </p>
-
-    <%= link_to "Criar minha conta", signup_path, class: "btn btn-success btn-lg" %>
+      <%= link_to "Começar gratuitamente", signup_path, class: "btn btn-light btn-lg px-5 fw-semibold" %>
+    </div>
   </div>
-</div>
+</section>

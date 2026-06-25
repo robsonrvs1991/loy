@@ -34,9 +34,13 @@ Rails.application.routes.draw do
   end
 
   resource :barbershop, only: [:show, :edit, :update]
+
   resources :customers
   resources :services
-  resource :loyalty_program, only: [:show, :edit, :update]
+  resources :loyalty_programs
+
+  get "/loyalty_program", to: redirect("/loyalty_programs")
+
   resources :appointments, only: [:index, :new, :create, :show]
   resources :rewards, only: [:index, :show, :update]
 

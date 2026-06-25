@@ -5,7 +5,7 @@ class Company < ApplicationRecord
   has_many :services, foreign_key: :barbershop_id, dependent: :destroy
   has_many :appointments, foreign_key: :barbershop_id, dependent: :destroy
   has_many :rewards, foreign_key: :barbershop_id, dependent: :destroy
-  has_one :loyalty_program, foreign_key: :barbershop_id, dependent: :destroy
+  has_many :loyalty_programs, foreign_key: :barbershop_id, dependent: :destroy
   has_one :subscription, foreign_key: :barbershop_id, dependent: :destroy
 
   validates :name, presence: true

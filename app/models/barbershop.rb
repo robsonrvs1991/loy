@@ -1,7 +1,7 @@
 class Barbershop < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :services, dependent: :destroy
-  has_one :loyalty_program, dependent: :destroy
+  has_many :loyalty_programs, dependent: :destroy
   has_many :appointments, dependent: :destroy
   has_many :rewards, dependent: :destroy
 

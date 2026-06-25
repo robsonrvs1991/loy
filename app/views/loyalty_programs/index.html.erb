@@ -1,16 +1,66 @@
-<p style="color: green"><%= notice %></p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <p class="text-muted mb-1">Configuração de fidelidade</p>
+    <h1 class="h3 mb-0">Programas de fidelidade</h1>
+  </div>
 
-<% content_for :title, "Loyalty programs" %>
-
-<h1>Loyalty programs</h1>
-
-<div id="loyalty_programs">
-  <% @loyalty_programs.each do |loyalty_program| %>
-    <%= render loyalty_program %>
-    <p>
-      <%= link_to "Show this loyalty program", loyalty_program %>
-    </p>
-  <% end %>
+  <%= link_to "Novo programa", new_loyalty_program_path, class: "btn btn-primary" %>
 </div>
 
-<%= link_to "New loyalty program", new_loyalty_program_path %>
+<div class="card loy-card">
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Programa</th>
+          <th>Item/Serviço</th>
+          <th>Meta</th>
+          <th>Recompensa</th>
+          <th>Status</th>
+          <th class="text-end">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if @loyalty_programs.any? %>
+          <% @loyalty_programs.each do |program| %>
+            <tr>
+              <td class="fw-semibold"><%= program.name %></td>
+
+              <td>
+                <% if program.service.present? %>
+                  <%= program.service.name %>
+                <% else %>
+                  <span class="text-muted">Todos os itens/serviços</span>
+                <% end %>
+              </td>
+
+              <td><%= program.required_visits %> ponto(s)</td>
+
+              <td><%= program.reward_description %></td>
+
+              <td>
+                <% if program.active? %>
+                  <span class="badge text-bg-success">Ativo</span>
+                <% else %>
+                  <span class="badge text-bg-secondary">Inativo</span>
+                <% end %>
+              </td>
+
+              <td class="text-end">
+                <%= link_to "Ver", loyalty_program_path(program), class: "btn btn-sm btn-outline-primary" %>
+                <%= link_to "Editar", edit_loyalty_program_path(program), class: "btn btn-sm btn-outline-secondary" %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="6" class="text-center text-muted py-5">
+              Nenhum programa de fidelidade cadastrado.
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
