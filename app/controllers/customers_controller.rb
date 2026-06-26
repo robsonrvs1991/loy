@@ -43,8 +43,23 @@ class CustomersController < ApplicationController
     @customer.email = @customer.email.to_s.downcase
 
     if @customer.save
-      send_customer_access_email
-      redirect_to customer_path(@customer), notice: "Cliente cadastrado. Enviamos o acesso por e-mail."
+      email_sent = send_customer_access_email(@temporary_password)
+
+      flash[:customer_access] = {
+        name: @customer.name,
+        email: @customer.email,
+        password: @temporary_password,
+        login_url: "#{request.base_url}/cliente/login",
+        portal_url: "#{request.base_url}/cliente"
+      }
+
+      notice_message = if email_sent
+                         "Cliente cadastrado. O acesso também está disponível para copiar e enviar."
+                       else
+                         "Cliente cadastrado, mas não foi possível enviar o e-mail. Copie os dados de acesso abaixo."
+                       end
+
+      redirect_to customer_path(@customer), notice: notice_message
     else
       render :new, status: :unprocessable_entity
     end
@@ -88,24 +103,23 @@ class CustomersController < ApplicationController
       password: password,
       password_confirmation: password_confirmation
     )
-      if send_email
-        begin
-          CustomerMailer.with(
-            customer: @customer,
-            temporary_password: password,
-            company: current_barbershop,
-            login_url: "#{request.base_url}/cliente/login"
-          ).welcome_email.deliver_now
-        rescue StandardError => e
-          Rails.logger.error("[CustomerMailer] #{e.class} - #{e.message}")
-          redirect_to customer_path(@customer),
-                      notice: "Senha alterada, mas não foi possível enviar o e-mail."
-          return
-        end
-      end
+      email_sent = send_email ? send_customer_access_email(password) : true
 
-      redirect_to customer_path(@customer),
-                  notice: "Senha alterada com sucesso."
+      flash[:customer_access] = {
+        name: @customer.name,
+        email: @customer.email,
+        password: password,
+        login_url: "#{request.base_url}/cliente/login",
+        portal_url: "#{request.base_url}/cliente"
+      }
+
+      notice_message = if send_email && !email_sent
+                         "Senha alterada, mas não foi possível enviar o e-mail. Copie os dados de acesso abaixo."
+                       else
+                         "Senha alterada com sucesso. Os dados de acesso estão disponíveis para copiar."
+                       end
+
+      redirect_to customer_path(@customer), notice: notice_message
     else
       redirect_to customer_path(@customer),
                   alert: "Não foi possível alterar a senha."
@@ -129,15 +143,17 @@ class CustomersController < ApplicationController
     params.require(:user).permit(:name, :email, :phone)
   end
 
-  def send_customer_access_email
-    CustomerMailer.with(
+  def send_customer_access_email(password)
+    CustomerAccessEmailService.deliver!(
       customer: @customer,
-      temporary_password: @temporary_password,
+      temporary_password: password,
       company: current_barbershop,
       login_url: "#{request.base_url}/cliente/login"
-    ).welcome_email.deliver_now
+    )
+
+    true
   rescue StandardError => e
-    Rails.logger.error("[CustomerMailer] Falha ao enviar acesso: #{e.class} - #{e.message}")
-    flash[:alert] = "Cliente cadastrado, mas não foi possível enviar o e-mail. Senha temporária: #{@temporary_password}"
+    Rails.logger.error("[CustomerAccessEmailService] Falha ao enviar acesso: #{e.class} - #{e.message}")
+    false
   end
 end

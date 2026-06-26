@@ -7,6 +7,97 @@
   </div>
 </div>
 
+<% if flash[:customer_access].present? %>
+  <% access = flash[:customer_access] %>
+
+  <%
+    access_message = [
+      "Olá, #{access['name']}!",
+      "",
+      "Seu acesso ao Cartão Fidelidade foi criado com sucesso.",
+      "",
+      "Acesse:",
+      access["login_url"],
+      "",
+      "Login:",
+      access["email"],
+      "",
+      "Senha temporária:",
+      access["password"],
+      "",
+      "Após acessar, recomendamos alterar sua senha.",
+      "",
+      "Equipe #{current_barbershop.name}"
+    ].join("\n")
+  %>
+
+  <div class="card border-success shadow-sm mb-4">
+    <div class="card-header bg-success text-white">
+      <strong>Acesso do cliente criado com sucesso</strong>
+    </div>
+
+    <div class="card-body">
+      <p class="text-muted">
+        Copie a mensagem abaixo e envie para o cliente por WhatsApp, SMS ou outro canal.
+      </p>
+
+      <div class="row mb-3">
+        <div class="col-md-4 mb-3">
+          <div class="border rounded p-3 h-100">
+            <small class="text-muted d-block">Login</small>
+            <strong><%= access["email"] %></strong>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="border rounded p-3 h-100">
+            <small class="text-muted d-block">Senha temporária</small>
+            <strong><%= access["password"] %></strong>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="border rounded p-3 h-100">
+            <small class="text-muted d-block">Portal do cliente</small>
+            <strong><%= access["login_url"] %></strong>
+          </div>
+        </div>
+      </div>
+
+      <textarea id="customer-access-message"
+                class="form-control mb-3"
+                rows="11"
+                readonly
+                onclick="this.select();"><%= access_message %></textarea>
+
+      <div class="d-flex flex-wrap gap-2">
+        <button type="button"
+                class="btn btn-success"
+                onclick="navigator.clipboard.writeText(document.getElementById('customer-access-message').value); this.innerText='Mensagem copiada!';">
+          Copiar mensagem completa
+        </button>
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                onclick="navigator.clipboard.writeText('<%= access["email"] %>'); this.innerText='Login copiado!';">
+          Copiar login
+        </button>
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                onclick="navigator.clipboard.writeText('<%= access["password"] %>'); this.innerText='Senha copiada!';">
+          Copiar senha
+        </button>
+
+        <%= link_to "Abrir login do cliente",
+                    access["login_url"],
+                    target: "_blank",
+                    class: "btn btn-outline-success" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-md-4 mb-4">
     <div class="card shadow-sm h-100">
@@ -37,7 +128,7 @@
 
         <div class="mt-3">
           <%= link_to "Abrir portal do cliente",
-                      "#{request.base_url}/cliente",
+                      "#{request.base_url}/cliente/login",
                       target: "_blank",
                       class: "btn btn-sm btn-success" %>
         </div>
