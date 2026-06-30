@@ -1,22 +1,24 @@
 class CompanyAccessEmailService
-  def self.deliver!(user:, company:, login_url:)
+  def self.deliver!(user:, company:, login_url:, password: nil)
     new(
       user: user,
       company: company,
-      login_url: login_url
+      login_url: login_url,
+      password: password
     ).deliver!
   end
 
-  def initialize(user:, company:, login_url:)
+  def initialize(user:, company:, login_url:, password: nil)
     @user = user
     @company = company
     @login_url = login_url
+    @password = password
   end
 
   def deliver!
     ResendEmailService.deliver!(
       to: user.email,
-      subject: "Bem-vindo ao Loy! Sua empresa foi cadastrada",
+      subject: "Seu acesso ao Loy está disponível",
       html: html_body,
       text: text_body
     )
@@ -24,33 +26,29 @@ class CompanyAccessEmailService
 
   private
 
-  attr_reader :user, :company, :login_url
+  attr_reader :user, :company, :login_url, :password
 
   def html_body
+    password_html = if password.present?
+                      "<p><strong>Senha:</strong> #{password}</p>"
+                    else
+                      ""
+                    end
+
     <<~HTML
-      <h2>Bem-vindo ao Loy!</h2>
+      <h2>Seu acesso ao Loy está disponível</h2>
 
       <p>Olá, #{user.name}!</p>
 
       <p>
-        Sua empresa <strong>#{company.name}</strong> foi cadastrada com sucesso no Loy.
+        A empresa <strong>#{company.name}</strong> está cadastrada no Loy.
       </p>
-
-      <p>
-        A partir de agora, você já pode acessar o painel da sua empresa para:
-      </p>
-
-      <ul>
-        <li>Cadastrar clientes</li>
-        <li>Cadastrar itens e serviços</li>
-        <li>Configurar programas de fidelidade</li>
-        <li>Registrar atendimentos</li>
-        <li>Acompanhar recompensas</li>
-      </ul>
 
       <p>
         <strong>Login:</strong> #{user.email}
       </p>
+
+      #{password_html}
 
       <p>
         Acesse o painel pelo link abaixo:<br>
@@ -58,31 +56,28 @@ class CompanyAccessEmailService
       </p>
 
       <p>
-        Equipe Loy
+        No painel você poderá cadastrar clientes, itens/serviços, programas de fidelidade e recompensas.
       </p>
+
+      <p>Equipe Loy</p>
     HTML
   end
 
   def text_body
+    password_text = password.present? ? "Senha: #{password}\n\n" : ""
+
     <<~TEXT
-      Bem-vindo ao Loy!
+      Seu acesso ao Loy está disponível
 
       Olá, #{user.name}!
 
-      Sua empresa #{company.name} foi cadastrada com sucesso no Loy.
-
-      A partir de agora, você já pode acessar o painel da sua empresa para:
-
-      - Cadastrar clientes
-      - Cadastrar itens e serviços
-      - Configurar programas de fidelidade
-      - Registrar atendimentos
-      - Acompanhar recompensas
+      A empresa #{company.name} está cadastrada no Loy.
 
       Login: #{user.email}
-
-      Acesse o painel:
+      #{password_text}Acesse o painel:
       #{login_url}
+
+      No painel você poderá cadastrar clientes, itens/serviços, programas de fidelidade e recompensas.
 
       Equipe Loy
     TEXT

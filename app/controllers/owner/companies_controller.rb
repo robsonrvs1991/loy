@@ -44,8 +44,10 @@ module Owner
 
       @owner_user = @company.users.new(owner_user_params)
       @owner_user.role = "business"
+
       temporary_password = SecureRandom.alphanumeric(10)
       @owner_user.password = temporary_password
+      @owner_user.password_confirmation = temporary_password
 
       ActiveRecord::Base.transaction do
         @company.save!
@@ -61,7 +63,15 @@ module Owner
         @owner_user.save!
       end
 
-      redirect_to owner_company_path(@company), notice: "Empresa criada. Senha temporária do responsável: #{temporary_password}"
+      email_sent = send_company_access_email(@owner_user, @company, temporary_password)
+
+      notice_message = if email_sent
+                         "Empresa criada. A senha temporária foi enviada por e-mail. Senha temporária: #{temporary_password}"
+                       else
+                         "Empresa criada, mas não foi possível enviar o e-mail. Senha temporária: #{temporary_password}"
+                       end
+
+      redirect_to owner_company_path(@company), notice: notice_message
     rescue ActiveRecord::RecordInvalid => e
       flash.now[:alert] = e.record.errors.full_messages.to_sentence
       @subscription ||= Subscription.new(subscription_params)
@@ -97,9 +107,21 @@ module Owner
       return redirect_to owner_company_path(@company), alert: "Empresa sem responsável cadastrado." unless user
 
       temporary_password = SecureRandom.alphanumeric(10)
-      user.update!(password: temporary_password)
 
-      redirect_to owner_company_path(@company), notice: "Senha redefinida. Nova senha temporária: #{temporary_password}"
+      user.update!(
+        password: temporary_password,
+        password_confirmation: temporary_password
+      )
+
+      email_sent = send_company_access_email(user, @company, temporary_password)
+
+      notice_message = if email_sent
+                         "Senha redefinida e enviada por e-mail. Nova senha temporária: #{temporary_password}"
+                       else
+                         "Senha redefinida, mas não foi possível enviar o e-mail. Nova senha temporária: #{temporary_password}"
+                       end
+
+      redirect_to owner_company_path(@company), notice: notice_message
     end
 
     def destroy
@@ -123,6 +145,20 @@ module Owner
 
     def subscription_params
       params.require(:subscription).permit(:plan, :price, :status, :free, :blocked, :trial_until, :expires_at, :last_payment_at)
+    end
+
+    def send_company_access_email(user, company, temporary_password)
+      CompanyAccessEmailService.deliver!(
+        user: user,
+        company: company,
+        login_url: "#{request.base_url}/login",
+        password: temporary_password
+      )
+
+      true
+    rescue StandardError => e
+      Rails.logger.error("[CompanyAccessEmailService] Falha ao enviar acesso: #{e.class} - #{e.message}")
+      false
     end
   end
 end
